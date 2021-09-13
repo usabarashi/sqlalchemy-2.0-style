@@ -1,33 +1,22 @@
 # see: https://docs.sqlalchemy.org/en/14/changelog/migration_20.html#migration-orm-configuration
-from sqlalchemy import column, create_engine, select, table
-from sqlalchemy.orm import declarative_base, registry
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, registry, Session
 
 DB_URL = "sqlite:///test.db"
-engine = create_engine(DB_URL)
+engine = create_engine(DB_URL, future=True)
+session = Session(engine)
 Base = declarative_base()
 mapper_registry = registry()
 
+DROP_TABLE = """
+    DROP TABLE IF EXISTS users; 
+    """
 CREATE_TABLE = """
     CREATE TABLE user (
         id integer PRIMARY KEY AUTOINCREMENT,
         name nvarchar NOT NULL,
         email_address nvarchar NOT NULL
-    )
+    );
     """
-INSERT_RECORD = """
-    INSERT INTO user (
-        name,
-        email_address
-    ) VALUES (
-        'john doe',
-        'example@example.com'
-    )
-    """
-
-# engine.execute(CREATE_TABLE)
-# engine.execute(INSERT_RECORD)
-
-user = table("user", column("id"), column("name"), column("email_address"))
-result = engine.execute(select([user.c.id, user.c.name, user.c.email_address]))
-
-print(result.fetchall())
+# session.execute(DROP_TABLE)
+# session.execute(CREATE_TABLE)
