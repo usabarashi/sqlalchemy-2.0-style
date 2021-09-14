@@ -12,8 +12,8 @@ def test_Entity登録():
 
     idが採番されること
     """
-    repository.session.begin()
-    try:
+
+    def usecase():
         entity = repository.create(
             name="John Doe", email_address="john.doe@example.com"
         )
@@ -22,17 +22,14 @@ def test_Entity登録():
         assert None is not saved_entity.id_
         assert "John Doe" == saved_entity.name
         assert "john.doe@example.com" == saved_entity.email_address
-        repository.session.commit()
-    except Exception:
-        repository.session.rollback()
-        raise
+
+    repository.acid(trannsaction=usecase)
 
 
 def test_Entity更新():
     """Entity更新"""
 
-    repository.session.begin()
-    try:
+    def usecase():
         entity = repository.create(
             name="John Doe", email_address="john.doe@example.com"
         )
@@ -45,10 +42,8 @@ def test_Entity更新():
         assert saved_entity.id_ == modified_entity.id_
         assert "Jane Doe" == modified_entity.name
         assert "jane.doe@example.com" == modified_entity.email_address
-        sqlite.session.commit()
-    except Exception:
-        sqlite.session.rollback()
-        raise
+
+    repository.acid(trannsaction=usecase)
 
 
 def test_Entity取得():
@@ -56,8 +51,8 @@ def test_Entity取得():
 
     idに該当するEntityが存在しない場合はNoneを返却すること
     """
-    repository.session.begin()
-    try:
+
+    def usecase():
         entity = repository.get(id_=1)
         if entity is None:
             assert None is not entity
@@ -65,10 +60,8 @@ def test_Entity取得():
             assert 1 == entity.id_
             assert "John Doe" == entity.name
             assert "john.doe@example.com" == entity.email_address
-        repository.session.commit()
-    except Exception:
-        repository.session.rollback()
-        raise
+
+    repository.acid(trannsaction=usecase)
 
 
 def test_レコード取得():
