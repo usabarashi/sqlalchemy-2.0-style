@@ -28,7 +28,7 @@ class Repository(ABC):
         """取得
 
         - idに該当するEntityを返却する
-        - idに害するとEntityが存在しない場合はNoneを返却する
+        - idに該当するEntityが存在しない場合はNoneを返却する
         """
         raise NotImplementedError
 
